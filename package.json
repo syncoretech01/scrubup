@@ -1,0 +1,10 @@
+{
+  "name": "scrub-up-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build-static.mjs",
+    "start": "node server.mjs"
+  }
+}
