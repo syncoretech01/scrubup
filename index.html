@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scrub Up Redesign - Full Canvas Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700;800&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600;700;800&family=Inter+Tight:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Saira:wght@300;400;500;600;700&family=Schibsted+Grotesk:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#1e63c7;
+    --accent-2:#1c5bb6;
+    --accent2:#1c5bb6;
+    --accent-deep:#184c92;
+    --accentDeep:#184c92;
+    --accentRGB:30,99,199;
+    --highlight:#8fc8ff;
+    --mint:#8fc8ff;
+    --mintRGB:143,200,255;
+    --navy:#15212e;
+    --forest:#15212e;
+    --navy-deep:#0f1822;
+    --forestDeep:#0f1822;
+    --tint:#e6f0fb;
+    --tint2:#cfe4fa;
+    --canvas-bg:#080b10;
+    --panel:#101722;
+    --ink:#ffffff;
+    --muted:rgba(255,255,255,.54);
+    --quiet:rgba(255,255,255,.38);
+    --line:rgba(255,255,255,.12);
+    --overview-display:"Saira",Arial,sans-serif;
+    --overview-body:"Saira",Arial,sans-serif;
+    --overview-mono:"IBM Plex Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--canvas-bg);color:var(--ink)}
+  body{font-family:var(--overview-body);overflow-x:auto}
+  ::selection{background:var(--highlight);color:#06101d}
+  a{color:inherit}
+  .page-shell{
+    min-width:max-content;
+    min-height:100vh;
+    padding:48px 60px 70px;
+    background:
+      radial-gradient(1200px 720px at 24% -16%,rgba(143,200,255,.15),transparent 62%),
+      radial-gradient(980px 560px at 86% 4%,rgba(30,99,199,.20),transparent 58%),
+      linear-gradient(180deg,#111722 0%,#070a0f 72%);
+  }
+  .overview-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:34px;
+    max-width:2360px;
+    margin-bottom:42px;
+  }
+  .brand-block{display:flex;align-items:center;gap:18px}
+  .brand-mark{
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 34% 28%,#fff 0 9%,var(--highlight) 10% 38%,var(--accent) 70%),
+      var(--accent);
+    box-shadow:0 0 0 1px rgba(143,200,255,.28),0 20px 48px rgba(0,0,0,.42);
+    position:relative;
+    flex:none;
+  }
+  .brand-mark:after{
+    content:"";
+    position:absolute;
+    right:12px;
+    bottom:12px;
+    width:12px;
+    height:12px;
+    background:#fff;
+    clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
+  }
+  .eyebrow{
+    font-family:var(--overview-mono);
+    font-size:10px;
+    letter-spacing:.3em;
+    color:var(--highlight);
+    text-transform:uppercase;
+  }
+  h1{
+    font-family:var(--overview-display);
+    font-weight:600;
+    font-size:34px;
+    line-height:1.05;
+    letter-spacing:.01em;
+    margin:7px 0 0;
+  }
+  .overview-note{
+    font-family:var(--overview-mono);
+    font-size:11px;
+    line-height:1.7;
+    letter-spacing:.06em;
+    color:rgba(255,255,255,.50);
+    text-align:right;
+    max-width:430px;
+  }
+  #zoomControls{
+    position:fixed;
+    right:26px;
+    bottom:24px;
+    z-index:200;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:999px;
+    background:rgba(8,8,9,.78);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 24px 60px -28px rgba(0,0,0,.95);
+    backdrop-filter:blur(14px);
+  }
+  .zoom-btn{
+    appearance:none;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.06);
+    color:#fff;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:var(--overview-mono);
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease;
+  }
+  .zoom-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px)}
+  .zoom-btn:focus-visible{outline:2px solid var(--highlight);outline-offset:3px}
+  .zoom-reset{font-size:11px;letter-spacing:.02em}
+  #zoomLabel{
+    min-width:54px;
+    text-align:center;
+    font-family:var(--overview-mono);
+    font-size:12px;
+    color:var(--highlight);
+    letter-spacing:.04em;
+  }
+  #stage{position:relative;min-width:max-content}
+  #canvas{
+    display:flex;
+    align-items:flex-start;
+    gap:0;
+    transform-origin:top left;
+    transition:transform .18s ease;
+  }
+  .status{
+    width:760px;
+    min-height:220px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:rgba(255,255,255,.035);
+    color:var(--muted);
+    font-family:var(--overview-mono);
+    letter-spacing:.04em;
+  }
+  .frame-card{flex:none}
+  .frame-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    margin-bottom:14px;
+    transition:color .2s ease;
+  }
+  .frame-title:hover{color:var(--highlight)}
+  .frame-number{
+    font-family:var(--overview-mono);
+    font-size:12px;
+    color:var(--highlight);
+    letter-spacing:.12em;
+  }
+  .frame-name{font-size:16px;font-weight:500}
+  .open-icon{width:14px;height:14px;stroke:rgba(255,255,255,.5);stroke-width:2;fill:none}
+  .preview-shell{
+    display:block;
+    width:760px;
+    overflow:hidden;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 40px 80px -40px rgba(0,0,0,.9);
+    background:#000;
+    position:relative;
+    cursor:pointer;
+  }
+  .preview-shell:focus-visible{outline:2px solid var(--highlight);outline-offset:4px}
+  .preview-content{
+    transform-origin:top left;
+    display:block;
+    pointer-events:none;
+  }
+  .connector{
+    flex:none;
+    align-self:flex-start;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding:0 26px;
+    margin-top:250px;
+  }
+  .connector span{
+    font-family:var(--overview-mono);
+    font-size:8px;
+    letter-spacing:.18em;
+    color:rgba(255,255,255,.4);
+    text-transform:uppercase;
+  }
+  .connector svg{stroke:var(--highlight);stroke-width:2;fill:none}
+  .canvas-help{
+    font-family:var(--overview-mono);
+    font-size:11px;
+    color:rgba(255,255,255,.4);
+    margin-top:40px;
+    letter-spacing:.04em;
+  }
+  .overview-footer{
+    position:sticky;
+    left:60px;
+    width:min(1320px,calc(100vw - 120px));
+    margin-top:58px;
+    padding-top:30px;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .footer-grid{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:34px;
+    flex-wrap:wrap;
+  }
+  .footer-brand{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    max-width:600px;
+  }
+  .footer-brand .brand-mark{width:38px;height:38px}
+  .footer-brand .brand-mark:after{right:8px;bottom:8px;width:9px;height:9px}
+  .footer-kicker{
+    font-family:var(--overview-mono);
+    font-size:10px;
+    letter-spacing:.26em;
+    color:var(--highlight);
+    text-transform:uppercase;
+  }
+  .footer-title{
+    font-size:18px;
+    font-weight:500;
+    margin-top:7px;
+    letter-spacing:.01em;
+  }
+  .footer-copy{
+    font-family:var(--overview-mono);
+    font-size:11px;
+    line-height:1.7;
+    color:rgba(255,255,255,.48);
+    margin-top:9px;
+    letter-spacing:.035em;
+  }
+  .footer-actions{
+    text-align:right;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:10px;
+  }
+  .syncore-link{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-deep));
+    border:1px solid rgba(143,200,255,.34);
+    border-radius:999px;
+    padding:11px 16px;
+    font-family:var(--overview-mono);
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:.08em;
+    transition:filter .18s ease,transform .18s ease;
+  }
+  .syncore-link:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .syncore-link svg{width:13px;height:13px;stroke:#fff;stroke-width:2;fill:none}
+  .legal{
+    font-family:var(--overview-mono);
+    font-size:10px;
+    color:rgba(255,255,255,.42);
+    letter-spacing:.08em;
+    line-height:1.7;
+  }
+  .tweaks-panel{
+    position:sticky;
+    left:60px;
+    z-index:150;
+    width:min(1320px,calc(100vw - 120px));
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    padding:14px 16px;
+    margin:-18px 0 38px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
+    background:rgba(10,16,24,.78);
+    box-shadow:0 26px 70px -46px rgba(0,0,0,.95);
+    backdrop-filter:blur(16px);
+  }
+  .tweaks-fields{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .tweak-field{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    min-height:42px;
+    padding:6px 8px 6px 13px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.055);
+  }
+  .tweak-field label{
+    font-family:var(--overview-mono);
+    font-size:10px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.56);
+    white-space:nowrap;
+  }
+  .tweak-field{position:relative}
+  .tweak-trigger{
+    min-width:150px;
+    border:0;
+    border-radius:999px;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-deep));
+    padding:9px 34px 9px 14px;
+    font-family:var(--overview-body);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:left;
+    background-image:
+      linear-gradient(135deg,var(--accent),var(--accent-deep)),
+      linear-gradient(45deg,transparent 50%,#fff 50%),
+      linear-gradient(135deg,#fff 50%,transparent 50%);
+    background-position:0 0,calc(100% - 18px) 15px,calc(100% - 13px) 15px;
+    background-size:100% 100%,5px 5px,5px 5px;
+    background-repeat:no-repeat;
+  }
+  .tweak-trigger:focus-visible{outline:2px solid var(--highlight);outline-offset:3px}
+  .tweak-options{
+    position:absolute;
+    top:calc(100% + 9px);
+    right:8px;
+    z-index:500;
+    min-width:190px;
+    padding:8px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.16);
+    background:#0b111a;
+    box-shadow:0 28px 80px -34px rgba(0,0,0,.95),0 0 0 1px rgba(0,0,0,.4);
+    display:none;
+  }
+  .tweak-field[data-open="true"] .tweak-options{display:block}
+  .tweak-option{
+    width:100%;
+    border:0;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:10px 12px;
+    color:rgba(255,255,255,.78);
+    background:transparent;
+    font-family:var(--overview-body);
+    font-size:13px;
+    font-weight:650;
+    text-align:left;
+    cursor:pointer;
+  }
+  .tweak-option:hover,
+  .tweak-option[aria-selected="true"]{
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-deep));
+  }
+  .tweak-option[aria-selected="true"]::after{content:"Selected";font-family:var(--overview-mono);font-size:9px;letter-spacing:.08em;color:rgba(255,255,255,.62)}
+  .theme-swatches{display:flex;gap:7px;align-items:center}
+  .theme-swatches span{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.28);
+    box-shadow:0 8px 20px rgba(0,0,0,.22);
+  }
+  .tweaks-meta{
+    color:rgba(255,255,255,.50);
+    font-family:var(--overview-mono);
+    font-size:10px;
+    letter-spacing:.08em;
+    text-align:right;
+    line-height:1.6;
+  }
+  @media (max-width:760px){
+    .page-shell{padding:28px 18px 46px;min-width:0;overflow-x:hidden}
+    .overview-header{align-items:flex-start;flex-direction:column;margin-bottom:28px}
+    .overview-note{text-align:left}
+    #canvas{flex-direction:column;gap:28px;min-width:0}
+    #stage{min-width:0;width:100%!important;height:auto!important}
+    .frame-card,.preview-shell{width:100%}
+    .connector{display:none}
+    .overview-footer{position:static;width:100%;left:auto}
+    .footer-actions{align-items:flex-start;text-align:left}
+    .tweaks-panel{position:static;width:100%;left:auto;align-items:flex-start;flex-direction:column;margin:0 0 28px}
+    .tweaks-meta{text-align:left}
+    #zoomControls{display:none}
+  }
+</style>
+</head>
+<body>
+<main class="page-shell">
+  <header class="overview-header">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <div>
+        <div class="eyebrow">Scrub Up &middot; Website Redesign</div>
+        <h1>Website Mockup - Full Sequence</h1>
+      </div>
+    </div>
+    <div class="overview-note">
+      Complete website mockup<br>
+      Frames are ordered in the customer journey
+    </div>
+  </header>
+
+  <section class="tweaks-panel" aria-label="Mockup tweaks">
+    <div class="tweaks-fields">
+      <div class="tweak-field">
+        <label for="themeTweak">Color Scheme</label>
+        <button id="themeTweak" class="tweak-trigger" type="button" data-value="Cobalt" aria-haspopup="listbox" aria-expanded="false"><span class="tweak-value">Cobalt</span></button>
+        <div class="tweak-options" role="listbox" aria-label="Color Scheme">
+          <button class="tweak-option" type="button" role="option" data-value="Cobalt" aria-selected="true">Cobalt</button>
+          <button class="tweak-option" type="button" role="option" data-value="Royal Cobalt" aria-selected="false">Royal Cobalt</button>
+          <button class="tweak-option" type="button" role="option" data-value="Ice Cobalt" aria-selected="false">Ice Cobalt</button>
+          <button class="tweak-option" type="button" role="option" data-value="Ink Cobalt" aria-selected="false">Ink Cobalt</button>
+        </div>
+      </div>
+      <div class="tweak-field">
+        <label for="fontTweak">Font Style</label>
+        <button id="fontTweak" class="tweak-trigger" type="button" data-value="Aero Luxe" aria-haspopup="listbox" aria-expanded="false"><span class="tweak-value">Aero Luxe</span></button>
+        <div class="tweak-options" role="listbox" aria-label="Font Style">
+          <button class="tweak-option" type="button" role="option" data-value="Aero Luxe" aria-selected="true">Aero Luxe</button>
+          <button class="tweak-option" type="button" role="option" data-value="Atelier" aria-selected="false">Atelier</button>
+          <button class="tweak-option" type="button" role="option" data-value="Editorial Pro" aria-selected="false">Editorial Pro</button>
+          <button class="tweak-option" type="button" role="option" data-value="Neo Grotesk" aria-selected="false">Neo Grotesk</button>
+          <button class="tweak-option" type="button" role="option" data-value="Precision" aria-selected="false">Precision</button>
+          <button class="tweak-option" type="button" role="option" data-value="Premium" aria-selected="false">Classic Premium</button>
+        </div>
+      </div>
+      <div id="themeSwatches" class="theme-swatches" aria-hidden="true"></div>
+    </div>
+    <div id="tweaksMeta" class="tweaks-meta">Cobalt / Aero Luxe</div>
+  </section>
+
+  <div id="zoomControls" aria-label="Canvas zoom controls">
+    <button id="zoomOut" class="zoom-btn" type="button" aria-label="Zoom out" title="Zoom out">-</button>
+    <div id="zoomLabel" aria-live="polite">100%</div>
+    <button id="zoomIn" class="zoom-btn" type="button" aria-label="Zoom in" title="Zoom in">+</button>
+    <button id="zoomReset" class="zoom-btn zoom-reset" type="button" aria-label="Reset zoom" title="Reset zoom">1:1</button>
+  </div>
+
+  <section id="stage" aria-label="Scrub Up redesign screens">
+    <div id="canvas">
+      <div class="status">Loading Scrub Up canvas...</div>
+    </div>
+  </section>
+  <div class="canvas-help">Frames are generated from the exported design file and scaled into a proper website sequence. Click a title or frame to open the source canvas.</div>
+
+  <footer class="overview-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <div class="footer-kicker">Scrub Up</div>
+          <div class="footer-title">Live-tweak website mockup for premium mobile detailing.</div>
+          <div class="footer-copy">A complete customer journey from home, services, booking, proof, trust, locations, contact, and mobile screens.</div>
+        </div>
+      </div>
+      <div class="footer-actions">
+        <a class="syncore-link" href="https://syncoretech.com/" target="_blank" rel="noopener noreferrer">
+          SITE BY SYNCORE TECH
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+        <div class="legal">&copy; 2026 Scrub Up. All rights reserved.<br>Website redesign concept and overview.</div>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function(){
+  const sourceUrl = "Scrub Up Redesign.dc.html";
+  const THEMES = {
+    Cobalt: { accent:"#1E63C7", accent2:"#1C5BB6", accentDeep:"#184C92", accentRGB:"30,99,199", mint:"#8FC8FF", mintRGB:"143,200,255", forest:"#15212E", forestDeep:"#0F1822", tint:"#E6F0FB", tint2:"#CFE4FA" },
+    "Royal Cobalt": { accent:"#245FE0", accent2:"#1B4FC6", accentDeep:"#13378C", accentRGB:"36,95,224", mint:"#8FC8FF", mintRGB:"143,200,255", forest:"#111A2A", forestDeep:"#0B111D", tint:"#E7F1FF", tint2:"#CADDF9" },
+    "Ice Cobalt": { accent:"#2F78D6", accent2:"#2666BA", accentDeep:"#19477F", accentRGB:"47,120,214", mint:"#BBDDFF", mintRGB:"187,221,255", forest:"#101A25", forestDeep:"#09111A", tint:"#ECF6FF", tint2:"#D6E9FB" },
+    "Ink Cobalt": { accent:"#1954B8", accent2:"#123F91", accentDeep:"#0D2D6E", accentRGB:"25,84,184", mint:"#7EBBFF", mintRGB:"126,187,255", forest:"#0D1522", forestDeep:"#080F19", tint:"#E3EEFF", tint2:"#C8DAF8" }
+  };
+  const FONT_PRESETS = {
+    "Aero Luxe": { display:"Plus Jakarta Sans", body:"Instrument Sans", mono:"IBM Plex Mono", overviewDisplay:"Plus Jakarta Sans", overviewBody:"Instrument Sans" },
+    Atelier: { display:"Outfit", body:"Manrope", mono:"IBM Plex Mono", overviewDisplay:"Outfit", overviewBody:"Manrope" },
+    "Editorial Pro": { display:"Inter Tight", body:"DM Sans", mono:"IBM Plex Mono", overviewDisplay:"Inter Tight", overviewBody:"DM Sans" },
+    "Neo Grotesk": { display:"Space Grotesk", body:"Instrument Sans", mono:"IBM Plex Mono", overviewDisplay:"Space Grotesk", overviewBody:"Instrument Sans" },
+    Precision: { display:"IBM Plex Sans", body:"IBM Plex Sans", mono:"IBM Plex Mono", overviewDisplay:"IBM Plex Sans", overviewBody:"IBM Plex Sans" },
+    Premium: { display:"Schibsted Grotesk", body:"Hanken Grotesk", mono:"IBM Plex Mono", overviewDisplay:"Saira", overviewBody:"Saira" }
+  };
+  const frameOrder = [
+    "home",
+    "navigation",
+    "services",
+    "service-detail",
+    "pricing",
+    "booking",
+    "confirmation",
+    "gallery",
+    "about",
+    "reviews",
+    "locations",
+    "faq",
+    "contact",
+    "mobile-screen-set",
+    "cover-design-system"
+  ];
+  const canvas = document.getElementById("canvas");
+  const stage = document.getElementById("stage");
+  const zoomLabel = document.getElementById("zoomLabel");
+  const themeTweak = document.getElementById("themeTweak");
+  const fontTweak = document.getElementById("fontTweak");
+  const themeSwatches = document.getElementById("themeSwatches");
+  const tweaksMeta = document.getElementById("tweaksMeta");
+  const connectorLabels = [
+    "shine","journey","menu","services","detail","pricing","book",
+    "confirm","gallery","about","contact","faq","reviews","mobile"
+  ];
+  let zoom = 1;
+  let currentTheme = localStorage.getItem("scrubUpTheme") || "Cobalt";
+  let currentFont = localStorage.getItem("scrubUpFont") || "Aero Luxe";
+
+  function cssFont(name,fallback){
+    return '"' + name + '",' + fallback;
+  }
+
+  function applyTheme(name){
+    currentTheme = THEMES[name] ? name : "Cobalt";
+    const theme = THEMES[currentTheme];
+    const root = document.documentElement.style;
+    const vars = {
+      "--accent":theme.accent,
+      "--accent-2":theme.accent2,
+      "--accent2":theme.accent2,
+      "--accent-deep":theme.accentDeep,
+      "--accentDeep":theme.accentDeep,
+      "--accentRGB":theme.accentRGB,
+      "--mint":theme.mint,
+      "--mintRGB":theme.mintRGB,
+      "--highlight":theme.mint,
+      "--forest":theme.forest,
+      "--forestDeep":theme.forestDeep,
+      "--navy":theme.forest,
+      "--navy-deep":theme.forestDeep,
+      "--tint":theme.tint,
+      "--tint2":theme.tint2
+    };
+    Object.entries(vars).forEach(([key,value])=>root.setProperty(key,value));
+    if(themeSwatches){
+      themeSwatches.innerHTML = [theme.accent,theme.accent2,theme.accentDeep,theme.mint,theme.tint].map((color)=>'<span style="background:' + color + '"></span>').join("");
+    }
+  }
+
+  function rewriteFonts(root,fontPreset){
+    const preset = FONT_PRESETS[fontPreset] || FONT_PRESETS["Aero Luxe"];
+    root.querySelectorAll("[style]").forEach((node)=>{
+      if(!node.dataset.originalStyle) node.dataset.originalStyle = node.getAttribute("style") || "";
+      let style = node.dataset.originalStyle;
+      style = style.replace(/'Schibsted Grotesk'|"Schibsted Grotesk"|Schibsted Grotesk/g, "'" + preset.display + "'");
+      style = style.replace(/'Hanken Grotesk'|"Hanken Grotesk"|Hanken Grotesk/g, "'" + preset.body + "'");
+      node.setAttribute("style",style);
+    });
+  }
+
+  function applyFonts(name){
+    currentFont = FONT_PRESETS[name] ? name : "Aero Luxe";
+    const preset = FONT_PRESETS[currentFont];
+    const root = document.documentElement.style;
+    root.setProperty("--overview-display",cssFont(preset.overviewDisplay,"Arial,sans-serif"));
+    root.setProperty("--overview-body",cssFont(preset.overviewBody,"Arial,sans-serif"));
+    root.setProperty("--overview-mono",cssFont(preset.mono,"monospace"));
+    document.querySelectorAll(".preview-content").forEach((content)=>rewriteFonts(content,currentFont));
+  }
+
+  function sourceHref(slug){
+    const params = new URLSearchParams({ theme: currentTheme, font: currentFont });
+    return sourceUrl + "?" + params.toString() + "#" + encodeURIComponent(slug);
+  }
+
+  function updateFrameLinks(){
+    document.querySelectorAll("[data-frame-slug]").forEach((node)=>{
+      const href = sourceHref(node.dataset.frameSlug);
+      if(node.tagName === "A") node.href = href;
+      else node.dataset.href = href;
+    });
+  }
+
+  function applyTweaks(){
+    applyTheme(controlValue(themeTweak,currentTheme));
+    applyFonts(controlValue(fontTweak,currentFont));
+    localStorage.setItem("scrubUpTheme",currentTheme);
+    localStorage.setItem("scrubUpFont",currentFont);
+    if(tweaksMeta) tweaksMeta.textContent = currentTheme + " / " + currentFont;
+    updateFrameLinks();
+    syncZoom();
+  }
+
+  function slugify(value){
+    return String(value || "")
+      .toLowerCase()
+      .replace(/&/g,"and")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/^-+|-+$/g,"") || "frame";
+  }
+
+  function frameLabel(frame,index){
+    const labels = Array.from(frame.querySelectorAll("[data-screen-label]"))
+      .map((node)=>node.getAttribute("data-screen-label"))
+      .filter(Boolean);
+    if(index === 0 && labels.length === 0) return "Cover - Design System";
+    if(frame.getAttribute("data-frame") === "mobile" && labels.length > 1) return "Mobile Screen Set";
+    return labels[0] || ("Frame " + String(index + 1).padStart(2,"0"));
+  }
+
+  function frameSlug(frame,index){
+    const label = frameLabel(frame,index);
+    if(index === 0 && label.indexOf("Cover") === 0) return "cover-design-system";
+    if(frame.getAttribute("data-frame") === "mobile") return "mobile-screen-set";
+    return slugify(label);
+  }
+
+  function injectSourceStyles(sourceDoc){
+    const helmet = sourceDoc.querySelector("helmet");
+    if(!helmet) return;
+    const nodes = helmet.querySelectorAll("link[rel='preconnect'],link[rel='stylesheet'],style");
+    nodes.forEach((node,index)=>{
+      const clone = node.cloneNode(true);
+      clone.setAttribute("data-source-style","scrub-up");
+      clone.setAttribute("data-source-style-index",String(index));
+      document.head.appendChild(clone);
+    });
+  }
+
+  function normalizeFrame(frame){
+    frame.style.position = "relative";
+    frame.style.left = "0";
+    frame.style.top = "0";
+    frame.style.margin = "0";
+    frame.style.transform = "none";
+    frame.style.pointerEvents = "none";
+    frame.removeAttribute("data-drags-parent");
+    frame.querySelectorAll("[data-drags-parent]").forEach((node)=>node.removeAttribute("data-drags-parent"));
+    frame.querySelectorAll("video").forEach((video)=>{
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute("muted","");
+      video.setAttribute("playsinline","");
+      video.setAttribute("loop","");
+    });
+    return frame;
+  }
+
+  function fitPreview(shell,content){
+    requestAnimationFrame(()=>{
+      const width = Math.max(content.scrollWidth, content.offsetWidth, 1);
+      const height = Math.max(content.scrollHeight, content.offsetHeight, 1);
+      const shellWidth = shell.clientWidth || parseFloat(getComputedStyle(shell).width) || 760;
+      const scale = Math.max(0.12, Math.min(0.78, shellWidth / width));
+      content.style.transform = "scale(" + scale + ")";
+      shell.style.height = Math.ceil(height * scale) + "px";
+      syncZoom();
+    });
+  }
+
+  function makeTitle(label,index,slug){
+    const link = document.createElement("a");
+    link.className = "frame-title";
+    link.dataset.frameSlug = slug;
+    link.href = sourceHref(slug);
+    link.innerHTML =
+      '<span class="frame-number">' + String(index + 1).padStart(2,"0") + '</span>' +
+      '<span class="frame-name">' + label + '</span>' +
+      '<svg class="open-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>';
+    return link;
+  }
+
+  function makeConnector(index){
+    const connector = document.createElement("div");
+    connector.className = "connector";
+    connector.innerHTML =
+      "<span>" + (connectorLabels[index] || "next") + "</span>" +
+      '<svg width="48" height="14" viewBox="0 0 48 14" aria-hidden="true"><path d="M0 7h44M37 1l7 6-7 6"/></svg>';
+    return connector;
+  }
+
+  function renderFrames(sourceDoc){
+    const frames = Array.from(sourceDoc.querySelectorAll("x-dc > div[data-frame]"))
+      .map((frame,sourceIndex)=>{
+        const label = frameLabel(frame,sourceIndex);
+        const slug = frameSlug(frame,sourceIndex);
+        const order = frameOrder.indexOf(slug);
+        return { frame, label, slug, sourceIndex, order: order === -1 ? 999 + sourceIndex : order };
+      })
+      .sort((a,b)=>a.order - b.order || a.sourceIndex - b.sourceIndex);
+    canvas.innerHTML = "";
+    if(!frames.length){
+      canvas.innerHTML = '<div class="status">No canvas frames were found.</div>';
+      syncZoom();
+      return;
+    }
+    frames.forEach(({frame: sourceFrame,label,slug},index)=>{
+      const card = document.createElement("article");
+      card.className = "frame-card";
+      card.appendChild(makeTitle(label,index,slug));
+
+      const shell = document.createElement("div");
+      shell.className = "preview-shell";
+      shell.dataset.frameSlug = slug;
+      shell.dataset.href = sourceHref(slug);
+      shell.setAttribute("role","link");
+      shell.tabIndex = 0;
+      shell.setAttribute("aria-label","Open " + label);
+      shell.addEventListener("click",()=>{ window.location.href = shell.dataset.href; });
+      shell.addEventListener("keydown",(event)=>{
+        if(event.key === "Enter" || event.key === " "){
+          event.preventDefault();
+          window.location.href = shell.dataset.href;
+        }
+      });
+
+      const content = normalizeFrame(sourceFrame.cloneNode(true));
+      content.classList.add("preview-content");
+      shell.appendChild(content);
+      card.appendChild(shell);
+      canvas.appendChild(card);
+      fitPreview(shell,content);
+
+      if(index < frames.length - 1) canvas.appendChild(makeConnector(index));
+    });
+    applyTweaks();
+    playVideos();
+  }
+
+  function playVideos(){
+    document.querySelectorAll(".preview-shell video").forEach((video)=>{
+      video.muted = true;
+      const play = video.play();
+      if(play && play.catch) play.catch(()=>{});
+    });
+  }
+
+  function setZoom(next){
+    const clamped = Math.min(1.6, Math.max(0.22, Math.round(next * 100) / 100));
+    if(Math.abs(clamped - zoom) < 0.001) return;
+    zoom = clamped;
+    syncZoom();
+  }
+
+  function syncZoom(){
+    if(!canvas || !stage) return;
+    canvas.style.transform = "scale(" + zoom + ")";
+    const width = Math.ceil((canvas.scrollWidth || canvas.getBoundingClientRect().width) * zoom);
+    const height = Math.ceil((canvas.scrollHeight || canvas.getBoundingClientRect().height) * zoom);
+    stage.style.width = width + "px";
+    stage.style.height = height + "px";
+    if(zoomLabel) zoomLabel.textContent = Math.round(zoom * 100) + "%";
+  }
+
+  function bindZoom(){
+    document.getElementById("zoomIn").addEventListener("click",()=>setZoom(zoom + 0.1));
+    document.getElementById("zoomOut").addEventListener("click",()=>setZoom(zoom - 0.1));
+    document.getElementById("zoomReset").addEventListener("click",()=>setZoom(1));
+    window.addEventListener("resize",syncZoom);
+    window.addEventListener("wheel",(event)=>{
+      if(!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      setZoom(zoom + (event.deltaY < 0 ? 0.08 : -0.08));
+    },{passive:false});
+    window.addEventListener("keydown",(event)=>{
+      if((event.key === "+" || event.key === "=") && (event.ctrlKey || event.metaKey)){event.preventDefault();setZoom(zoom + 0.1);}
+      if((event.key === "-" || event.key === "_") && (event.ctrlKey || event.metaKey)){event.preventDefault();setZoom(zoom - 0.1);}
+      if(event.key === "0" && (event.ctrlKey || event.metaKey)){event.preventDefault();setZoom(1);}
+    });
+  }
+
+  function controlValue(trigger,fallback){
+    return trigger && trigger.dataset.value ? trigger.dataset.value : fallback;
+  }
+
+  function optionLabel(option){
+    return option ? option.textContent.trim() : "";
+  }
+
+  function setControlValue(trigger,value){
+    if(!trigger) return;
+    const field = trigger.closest(".tweak-field");
+    const option = field ? field.querySelector('.tweak-option[data-value="' + CSS.escape(value) + '"]') : null;
+    const resolved = option ? option.dataset.value : trigger.dataset.value;
+    trigger.dataset.value = resolved;
+    const valueNode = trigger.querySelector(".tweak-value");
+    if(valueNode) valueNode.textContent = optionLabel(option) || resolved;
+    if(field){
+      field.querySelectorAll(".tweak-option").forEach((item)=>{
+        item.setAttribute("aria-selected",String(item.dataset.value === resolved));
+      });
+    }
+  }
+
+  function closeTweakMenus(except){
+    document.querySelectorAll('.tweak-field[data-open="true"]').forEach((field)=>{
+      if(field === except) return;
+      field.dataset.open = "false";
+      const trigger = field.querySelector(".tweak-trigger");
+      if(trigger) trigger.setAttribute("aria-expanded","false");
+    });
+  }
+
+  function bindTweakMenu(trigger,initialValue){
+    if(!trigger) return;
+    const field = trigger.closest(".tweak-field");
+    if(!field) return;
+    setControlValue(trigger,initialValue);
+    trigger.addEventListener("click",(event)=>{
+      event.stopPropagation();
+      const willOpen = field.dataset.open !== "true";
+      closeTweakMenus(field);
+      field.dataset.open = String(willOpen);
+      trigger.setAttribute("aria-expanded",String(willOpen));
+    });
+    trigger.addEventListener("keydown",(event)=>{
+      if(event.key !== "ArrowDown" && event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      closeTweakMenus(field);
+      field.dataset.open = "true";
+      trigger.setAttribute("aria-expanded","true");
+      const selected = field.querySelector('.tweak-option[aria-selected="true"]') || field.querySelector(".tweak-option");
+      if(selected) selected.focus();
+    });
+    const options = Array.from(field.querySelectorAll(".tweak-option"));
+    options.forEach((option,index)=>{
+      option.addEventListener("click",(event)=>{
+        event.stopPropagation();
+        setControlValue(trigger,option.dataset.value);
+        field.dataset.open = "false";
+        trigger.setAttribute("aria-expanded","false");
+        trigger.focus();
+        applyTweaks();
+      });
+      option.addEventListener("keydown",(event)=>{
+        if(event.key === "ArrowDown"){
+          event.preventDefault();
+          options[(index + 1) % options.length].focus();
+        }else if(event.key === "ArrowUp"){
+          event.preventDefault();
+          options[(index - 1 + options.length) % options.length].focus();
+        }else if(event.key === "Escape"){
+          event.preventDefault();
+          field.dataset.open = "false";
+          trigger.setAttribute("aria-expanded","false");
+          trigger.focus();
+        }else if(event.key === "Enter" || event.key === " "){
+          event.preventDefault();
+          option.click();
+        }
+      });
+    });
+  }
+
+  function bindTweaks(){
+    const selectedTheme = THEMES[currentTheme] && document.querySelector('.tweak-option[data-value="' + CSS.escape(currentTheme) + '"]') ? currentTheme : "Cobalt";
+    const selectedFont = FONT_PRESETS[currentFont] && document.querySelector('.tweak-option[data-value="' + CSS.escape(currentFont) + '"]') ? currentFont : "Aero Luxe";
+    bindTweakMenu(themeTweak,selectedTheme);
+    bindTweakMenu(fontTweak,selectedFont);
+    document.addEventListener("click",()=>closeTweakMenus());
+    document.addEventListener("keydown",(event)=>{
+      if(event.key === "Escape") closeTweakMenus();
+    });
+  }
+
+  fetch(sourceUrl)
+    .then((response)=>{
+      if(!response.ok) throw new Error("Could not load source canvas");
+      return response.text();
+    })
+    .then((html)=>{
+      const sourceDoc = new DOMParser().parseFromString(html,"text/html");
+      injectSourceStyles(sourceDoc);
+      applyTweaks();
+      renderFrames(sourceDoc);
+      setInterval(playVideos,2500);
+    })
+    .catch((error)=>{
+      canvas.innerHTML = '<div class="status">Unable to load the Scrub Up export. Serve this folder over HTTP and open index.html.</div>';
+      console.error(error);
+      syncZoom();
+    });
+  bindTweaks();
+  applyTweaks();
+  bindZoom();
+  syncZoom();
+})();
+</script>
+</body>
+</html>
